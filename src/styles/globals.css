@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-primary: #1558f5;
+    --color-success: #22c55e;
+    --color-danger: #ef4444;
+    --color-warning: #f59e0b;
+  }
+
+  * {
+    border-color: theme('colors.neutral.200');
+  }
+
+  body {
+    @apply bg-neutral-50 text-neutral-900 font-sans;
+  }
+}
+
+/* =========================================================
+   SECUREX HERO
+   ========================================================= */
+
+.securex-hero {
+  background:
+    radial-gradient(
+      ellipse at top right,
+      rgba(37, 99, 235, 0.08),
+      transparent 55%
+    ),
+    linear-gradient(
+      135deg,
+      #ffffff 0%,
+      #f8fafc 55%,
+      #eef6ff 100%
+    );
+}
+
+.securex-hero-badge {
+  border: 1px solid #d1d5db;
+  background: rgba(255, 255, 255, 0.8);
+  color: #475569;
+}
+
+.securex-hero-title {
+  color: #0f172a;
+}
+
+.securex-hero-description {
+  color: #475569;
+}
+
+.securex-hero-card {
+  border: 1px solid #dbe3ec;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow:
+    0 25px 60px rgba(15, 23, 42, 0.08);
+}
+
+.securex-lock-badge {
+  border: 1px solid #dbe3ec;
+  background: #ffffff;
+  color: #334155;
+}
+
+.securex-hero-tag {
+  border: 1px solid #d1d5db;
+  background: rgba(255, 255, 255, 0.8);
+  color: #475569;
+}
+
+.securex-hero .securex-outline-button {
+  background-color: #ffffff;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+}
+
+.securex-hero .securex-outline-button:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+/* =========================================================
+   COMPONENTS
+   ========================================================= */
+
+@layer components {
+  .page-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8;
+  }
+
+  .section-title {
+    @apply text-2xl font-bold text-neutral-900;
+  }
+
+  .animate-securex-slide-up {
+    animation: securex-slide-up 0.18s ease-out;
+  }
+}
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@keyframes securex-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
