@@ -3,6 +3,7 @@ import type {
   ButtonHTMLAttributes,
   ReactNode,
 } from 'react';
+import { Link } from 'react-router-dom';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
 export type ButtonSize = 'sm' | 'md' | 'lg';
@@ -33,14 +34,23 @@ export interface ButtonBaseProps {
 export type ButtonProps = ButtonBaseProps &
   Omit<ButtonHTMLAttributes<HTMLButtonElement>, keyof ButtonBaseProps> & {
     href?: undefined;
+    to?: undefined;
   };
 
 export type LinkButtonProps = ButtonBaseProps &
   Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof ButtonBaseProps> & {
     href: string;
+    to?: undefined;
   };
 
-type CombinedProps = ButtonProps | LinkButtonProps;
+/** Internal routes use react-router so navigation stays a client-side transition. */
+export type RouterLinkButtonProps = ButtonBaseProps &
+  Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof ButtonBaseProps> & {
+    to: string;
+    href?: undefined;
+  };
+
+type CombinedProps = ButtonProps | LinkButtonProps | RouterLinkButtonProps;
 
 export function Button(props: CombinedProps) {
   const {
@@ -61,6 +71,17 @@ export function Button(props: CombinedProps) {
     fullWidth ? 'w-full' : '',
     className ?? '',
   ].join(' ');
+
+  if ('to' in rest && rest.to !== undefined) {
+    const { to, ...linkRest } = rest as RouterLinkButtonProps;
+    return (
+      <Link to={to} className={baseClasses} {...linkRest}>
+        {leftIcon}
+        {children}
+        {rightIcon}
+      </Link>
+    );
+  }
 
   if ('href' in rest && rest.href !== undefined) {
     const { href, ...anchorRest } = rest as LinkButtonProps;

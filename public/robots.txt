@@ -1,0 +1,8 @@
+# SecureX public website
+User-agent: *
+Allow: /
+
+# Public, unauthenticated read endpoints (documented in /resources/api)
+Allow: /api/status$
+
+Sitemap: https://securex.sp-net.in/sitemap.xml

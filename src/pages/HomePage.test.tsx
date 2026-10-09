@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Navbar } from '../components/Navbar';
 import HomePage from '../pages/HomePage';
-import { APP_URL } from '../constants';
+import { APP_URL, NAV_LINKS, VERIFY_APP_URL } from '../constants';
 
 function renderNavbar() {
   return render(
@@ -27,14 +27,18 @@ describe('Navbar', () => {
     expect(launch[0]).toHaveAttribute('href', APP_URL);
   });
 
-  it('shows primary navigation links', () => {
+  it('links to credential verification in the main application', () => {
     renderNavbar();
-    expect(screen.getByRole('link', { name: 'Home' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'About' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'How It Works' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Features' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Security' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Contact' })).toBeInTheDocument();
+    const verify = screen.getAllByRole('link', { name: /verify a credential/i });
+    expect(verify.length).toBeGreaterThan(0);
+    expect(verify[0]).toHaveAttribute('href', VERIFY_APP_URL);
+  });
+
+  it('shows the primary navigation sections', () => {
+    renderNavbar();
+    for (const link of NAV_LINKS) {
+      expect(screen.getByRole('link', { name: link.label })).toBeInTheDocument();
+    }
   });
 });
 
@@ -60,6 +64,28 @@ describe('HomePage', () => {
     expect(launch[0]).toHaveAttribute('href', APP_URL);
   });
 
+  it('never publishes placeholder network statistics', () => {
+    render(
+      <MemoryRouter>
+        <HomePage />
+      </MemoryRouter>,
+    );
+    expect(screen.queryByText('10,000+')).not.toBeInTheDocument();
+    expect(screen.queryByText('50+')).not.toBeInTheDocument();
+    expect(screen.queryByText('100,000+')).not.toBeInTheDocument();
+  });
+
+  it('routes the How It Works CTA to the new information architecture', () => {
+    render(
+      <MemoryRouter>
+        <HomePage />
+      </MemoryRouter>,
+    );
+    const howItWorks = screen.getAllByRole('link', { name: /how it works/i });
+    expect(howItWorks.length).toBeGreaterThan(0);
+    expect(howItWorks[0]).toHaveAttribute('href', '/platform/how-it-works');
+  });
+
   it('does not expose authenticated application routes', () => {
     render(
       <MemoryRouter>
@@ -70,7 +96,12 @@ describe('HomePage', () => {
     let hasDashboardRoute = false;
     links.forEach((link) => {
       const href = link.getAttribute('href') ?? '';
-      if (/\/dashboard|\/auth\/login|\/holder|\/institution|\/employer|\/admin/.test(href)) {
+      const appPath = href.startsWith(APP_URL) ? href.slice(APP_URL.length) : href;
+      if (
+        /^\/(auth(\/|$)|dashboard(\/|$)|holder(\/|$)|institution(\/|$)|employer(\/|$)|admin(\/|$))/.test(
+          appPath,
+        )
+      ) {
         hasDashboardRoute = true;
       }
     });
